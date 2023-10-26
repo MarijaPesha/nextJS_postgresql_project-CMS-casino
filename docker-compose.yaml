@@ -1,0 +1,13 @@
+services:
+  # ...keep existing 'backend' service
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - 5432:5432 # enables connecting locally via psql
+    environment:
+      POSTGRES_DB: cms_webapp_dev
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
