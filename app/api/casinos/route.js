@@ -12,8 +12,8 @@ export async function POST(req) {
     const body = await req.json();
     const { name } = body;
 
-    // 1. when query the database to check for duplicate record,
-    // always use the lowercase version of the name for comparison
+    // * 1. when query the database to check for duplicate record,
+    // * always use the lowercase version of the name for comparison
     const isExistingCasino = await prisma.casino.findUnique({
       where: { name: name.toLowerCase() },
     });
@@ -32,8 +32,8 @@ export async function POST(req) {
 
     const casino = await prisma.casino.create({
       data: {
-        // 2. when receive a name to be stored in the database,
-        // convert it to lowercase before saving it
+        // * 2. when receive a name to be stored in the database,
+        // * convert it to lowercase before saving it
         name: joinWithHyphens(name.toLowerCase()),
         userId,
       },
@@ -46,4 +46,4 @@ export async function POST(req) {
   }
 }
 
-// 1. + 2. in this way, we prevent the duplication of casino names regardless of case sensitivity
+// * 1. + 2. in this way, we prevent the duplication of casino names regardless of case sensitivity

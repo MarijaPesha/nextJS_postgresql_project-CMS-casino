@@ -14,7 +14,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const casionos = await prisma.casino.findMany();
-  console.log(casionos[0]?.name);
+  // console.log(casionos[0]?.name);
   return (
     <ClerkProvider>
       <html lang="en">

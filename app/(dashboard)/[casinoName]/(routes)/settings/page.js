@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import SettingsForm from "./components/settings-form";
 
 const SettingPage = async ({ params }) => {
   const { userId } = auth();
@@ -9,7 +10,12 @@ const SettingPage = async ({ params }) => {
     redirect("/sign-in");
   }
 
-  const casino = await prisma.casino.findFirst();
+  const casino = await prisma.casino.findFirst({
+    where: {
+      name: params.casinoName,
+      userId,
+    },
+  });
 
   if (!casino) {
     redirect("/");
@@ -18,7 +24,7 @@ const SettingPage = async ({ params }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <div>Settings</div>
+        <SettingsForm initialData={casino} />
       </div>
     </div>
   );
