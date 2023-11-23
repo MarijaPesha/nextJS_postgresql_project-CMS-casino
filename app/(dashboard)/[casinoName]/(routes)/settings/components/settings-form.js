@@ -1,5 +1,7 @@
 "use client";
 
+import { ConfirmModal } from "@/components/modals/confirm-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,6 +14,7 @@ import {
 import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Trash } from "lucide-react";
@@ -28,6 +31,7 @@ const formSchema = z.object({
 const SettingsForm = ({ initialData }) => {
   const router = useRouter();
   const params = useParams();
+  const origin = useOrigin();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -41,21 +45,42 @@ const SettingsForm = ({ initialData }) => {
     try {
       setLoading(true);
       await axios.patch(`/api/casinos/${params.casinoName}`, values);
-      //form.reset();
       router.refresh();
-      toast.success("Casino updated.");
+      toast.success(`Casino ${params.casinoName} updated.`);
     } catch (error) {
       toast.error(`Something went wrong. Error: ${error}`);
     } finally {
       setLoading(false);
+      //form.reset();
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      setLoading(true);
+      await axios.delete(`/api/casinos/${params.casinoName}`);
+      router.refresh();
+      router.push("/");
+      toast.success(`Casino ${params.casinoName} deleted.`);
+    } catch (error) {
+      toast.error(`Something went wrong. Error: ${error}`);
+    } finally {
+      setLoading(false);
+      setOpen(false);
     }
   };
 
   return (
     <>
+      <ConfirmModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={loading}
+      />
       <div className="flex items-center justify-between">
         <Heading title="Settings" description="Manage casino preferences" />
-        <Button variant="destructive" size="icon" onClick={() => {}}>
+        <Button variant="destructive" size="icon" onClick={() => setOpen(true)}>
           <Trash className="h-4 w-4" />
         </Button>
       </div>
@@ -89,6 +114,12 @@ const SettingsForm = ({ initialData }) => {
           </Button>
         </form>
       </Form>
+      <Separator />
+      <ApiAlert
+        title="NEXT_PUBLIC_API_URL"
+        variant="public"
+        description={`${origin}/api/${params.casinoName}`}
+      />
     </>
   );
 };

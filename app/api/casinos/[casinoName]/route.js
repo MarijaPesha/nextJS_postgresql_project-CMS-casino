@@ -39,3 +39,28 @@ export async function PATCH(req, params) {
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+export async function DELETE(_req, params) {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthenticated", { status: 403 });
+    }
+
+    if (!params.params.casinoName) {
+      return new NextResponse("Casino name is required", { status: 400 });
+    }
+    const casino = await prisma.casino.deleteMany({
+      where: {
+        name: params.params.casinoName,
+        userId,
+      },
+    });
+
+    return NextResponse.json(casino);
+  } catch (error) {
+    console.log("[CASINO_DELETE]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}

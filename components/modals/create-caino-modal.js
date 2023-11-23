@@ -37,7 +37,6 @@ export const CreateCainoModal = () => {
   });
 
   const onSubmit = async (values) => {
-    console.log(values);
     try {
       setLoading(true);
       const response = await axios.post("/api/casinos", values);

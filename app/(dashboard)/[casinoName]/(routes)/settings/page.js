@@ -10,6 +10,7 @@ const SettingPage = async ({ params }) => {
     redirect("/sign-in");
   }
 
+  const casinos = await prisma.casino.findMany();
   const casino = await prisma.casino.findFirst({
     where: {
       name: params.casinoName,
@@ -24,7 +25,7 @@ const SettingPage = async ({ params }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <SettingsForm initialData={casino} />
+        <SettingsForm initialData={casino} casinos={casinos} />
       </div>
     </div>
   );

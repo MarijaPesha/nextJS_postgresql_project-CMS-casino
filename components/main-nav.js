@@ -10,6 +10,11 @@ const MainNav = ({ className, ...props }) => {
 
   const routes = [
     {
+      href: `/${params.casinoName}`,
+      label: "Overview",
+      active: pathName === `/${params.casinoName}`,
+    },
+    {
       href: `/${params.casinoName}/settings`,
       label: "Settings",
       active: pathName === `/${params.casinoName}/settings`,
